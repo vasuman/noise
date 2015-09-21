@@ -1,4 +1,4 @@
-#define FACT 100.0
+#define FACT 9000.0
 #define W 8
 #define H 8
 
@@ -23,7 +23,7 @@ float dotGradient(vec2 g, vec2 pos) {
 }
 
 float intrp(float a, float b, float w) {
-    float f = w * w * w * (6.0 * w * w - 15.0 * w + 10.0);
+    float f = w;
     return a * (1.0 - f) + b * f;
 }
 
