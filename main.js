@@ -77,6 +77,7 @@ function initProgram() {
     gl.attachShader(program, fragShader);
     gl.linkProgram(program);
     if(!gl.getProgramParameter(program, gl.LINK_STATUS)) {
+        gl.deleteProgram(program);
         throw 'link failed, ' + gl.getProgramInfoLog(program);
     }
     return program;
@@ -124,7 +125,6 @@ function loadShaders() {
             if (this.status !== 200) {
                 throw 'failed to load script ' + script.src;
             }
-            console.log(script, this);
             script.setAttribute('data-text', this.responseText);
             c++;
             if (c === scripts.length) {
