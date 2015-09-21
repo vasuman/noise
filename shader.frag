@@ -1,22 +1,24 @@
-#define W 10.0
 #define LOOP 10.0
+#define W 8
+#define H 8
 
 precision mediump float;
 
-const vec2 scale = vec2(1.0 / 60.0, 1.0 / 60.0);
-const vec2 wrap = vec2(10.0, 10.0);
-
 uniform vec2 uRes;
 uniform float uTick;
+uniform sampler2D uNoise;
 
-vec2 gradient(vec2 c) {
-    return normalize(c);
+const vec2 cTexDim = vec2(float(W), float(H));
+const vec2 cScale = vec2(10.0, 10.0);
+const vec2 cHalf = vec2(0.5, 0.5);
+
+vec2 gradient(vec2 g) {
+    return normalize(texture2D(uNoise,  g * g / cTexDim).rg - cHalf);
 }
 
 float dotGradient(vec2 g, vec2 pos) {
     vec2 dist = pos - g;
-    vec2 c = mod(g, wrap);
-    vec2 grad = gradient(c);
+    vec2 grad = gradient(g);
     return dot(grad, dist);
 }
 
@@ -27,7 +29,7 @@ float intrp(float a, float b, float w) {
 
 void main() {
     // grid coordinates
-    vec2 p = gl_FragCoord.xy * scale,
+    vec2 p = gl_FragCoord.xy / (uRes / cScale),
         g = floor(p), w = p - g;
     float tl = dotGradient(g, p);
     g += vec2(0.0, 1.0);
@@ -38,6 +40,6 @@ void main() {
     g += vec2(0.0, 1.0);
     float br = dotGradient(g, p),
           right = intrp(tr, br, w.y);
-    float i = intrp(left, right, w.x);
+    float i = intrp(left, right, w.x) + 0.3;
     gl_FragColor = vec4(i, i, i, 1.0);
 }
