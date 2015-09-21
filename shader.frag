@@ -22,9 +22,8 @@ float dotGradient(vec2 g, vec2 pos) {
     return dot(grad, dist);
 }
 
-float intrp(float a, float b, float w) {
-    float f = w;
-    return a * (1.0 - f) + b * f;
+float fade(float w) {
+    return w * w * w * (6.0 * w * w - 15.0 * w + 10.0);
 }
 
 void main() {
@@ -34,12 +33,12 @@ void main() {
     float tl = dotGradient(g, p);
     g += vec2(0.0, 1.0);
     float bl = dotGradient(g, p),
-          left = intrp(tl, bl, w.y);
+          left = mix(tl, bl, fade(w.y));
     g += vec2(1.0, -1.0);
     float tr = dotGradient(g, p);
     g += vec2(0.0, 1.0);
     float br = dotGradient(g, p),
-          right = intrp(tr, br, w.y);
-    float i = intrp(left, right, w.x) + 0.3;
+          right = mix(tr, br, fade(w.y));
+    float i = fade(mix(left, right, fade(w.x)) + 0.4);
     gl_FragColor = vec4(i, i, i, 1.0);
 }
