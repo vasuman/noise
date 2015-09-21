@@ -1,4 +1,4 @@
-#define LOOP 10.0
+#define FACT 100.0
 #define W 8
 #define H 8
 
@@ -13,7 +13,7 @@ const vec2 cScale = vec2(10.0, 10.0);
 const vec2 cHalf = vec2(0.5, 0.5);
 
 vec2 gradient(vec2 g) {
-    return normalize(texture2D(uNoise,  g * g / cTexDim).rg - cHalf);
+    return normalize(texture2D(uNoise,  (uTick / FACT) * g * g * g / cTexDim).rg - cHalf);
 }
 
 float dotGradient(vec2 g, vec2 pos) {
