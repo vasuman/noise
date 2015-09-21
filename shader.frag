@@ -1,4 +1,4 @@
-#define FACT 9000.0
+#define SLOW 3000.0
 #define W 8
 #define H 8
 
@@ -12,18 +12,21 @@ const vec2 cTexDim = vec2(float(W), float(H));
 const vec2 cScale = vec2(10.0, 10.0);
 const vec2 cHalf = vec2(0.5, 0.5);
 
+float fade(float w) {
+    float w2 = pow(w, 2.0);
+    return w * w2 * (6.0 * w2 - 15.0 * w + 10.0);
+}
+
 vec2 gradient(vec2 g) {
-    return normalize(texture2D(uNoise,  (uTick / FACT) * g * g * g / cTexDim).rg - cHalf);
+    float f = pow(sin(uTick / SLOW), 2.0);
+    vec2 c = f * g * g / cTexDim;
+    return normalize(texture2D(uNoise,  c).rg - cHalf);
 }
 
 float dotGradient(vec2 g, vec2 pos) {
     vec2 dist = pos - g;
     vec2 grad = gradient(g);
     return dot(grad, dist);
-}
-
-float fade(float w) {
-    return w * w * w * (6.0 * w * w - 15.0 * w + 10.0);
 }
 
 void main() {
